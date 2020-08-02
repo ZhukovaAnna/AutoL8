@@ -2,8 +2,9 @@ package ru.netology.data.Test;
 
 import lombok.val;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.netology.data.DataHelper;
+import ru.netology.data.util.DataHelper;
 import ru.netology.data.page.LoginPage;
 
 import java.sql.SQLException;
@@ -11,13 +12,19 @@ import java.sql.SQLException;
 import static com.codeborne.selenide.Selenide.open;
 
 public class FormTest {
+
+//    @BeforeEach
+//    void init() {
+//       val loginPage = open("http://localhost:9999", LoginPage.class);
+//    }
+
     @AfterAll
     public static void cleanTables() throws SQLException {
-        DataHelper.setUp();
+        DataHelper.cleanDataBase();
     }
 
     @Test
-    void shouldEnterWhenValidData() throws SQLException {
+    void shouldRegistrationWhenValidData() throws SQLException {
         val loginPage = open("http://localhost:9999", LoginPage.class);
         val authInfo = DataHelper.getAuthInfo();
         val verificationPage = loginPage.validAuth(authInfo);
@@ -26,26 +33,17 @@ public class FormTest {
     }
 
     @Test
-    void shouldNotEnterWhenInvalidLogin() {
-        val loginPage = open("http://localhost:9999", LoginPage.class);
-        val authInfo = DataHelper.invalidLoginAuthInfo();
-        loginPage.invalidAuth(authInfo);
-    }
-
-    @Test
-    void shouldNotEnterWhenInvalidPassword() {
+    void shouldNotRegistrationWhenInvalidPassword() {
         val loginPage = open("http://localhost:9999", LoginPage.class);
         val authInfo = DataHelper.invalidPasswordAuthInfo();
         loginPage.invalidAuth(authInfo);
     }
 
     @Test
-    void shouldNotEnterWhenInvalidCode() throws SQLException {
+    void shouldNotRegistrationWhenInvalidLogin() {
         val loginPage = open("http://localhost:9999", LoginPage.class);
-        val authInfo = DataHelper.getAuthInfo();
-        val verificationPage = loginPage.validAuth(authInfo);
-        val verificationCode = DataHelper.invalidVerificationCode();
-        verificationPage.invalidVerify(verificationCode);
+        val authInfo = DataHelper.invalidLoginAuthInfo();
+        loginPage.invalidAuth(authInfo);
     }
 
     @Test
@@ -56,5 +54,14 @@ public class FormTest {
         val invalidPassword = DataHelper.invalidPassword();
         loginPage.sendInvalidPassword(invalidPassword);
         loginPage.sendInvalidPasswordThirdTime(invalidPassword);
+    }
+
+    @Test
+    void shouldNotRegistrationWhenInvalidCode() throws SQLException {
+        val loginPage = open("http://localhost:9999", LoginPage.class);
+        val authInfo = DataHelper.getAuthInfo();
+        val verificationPage = loginPage.validAuth(authInfo);
+        val verificationCode = DataHelper.invalidVerificationCode();
+        verificationPage.invalidVerify(verificationCode);
     }
 }

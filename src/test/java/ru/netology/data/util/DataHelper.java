@@ -1,4 +1,4 @@
-package ru.netology.data;
+package ru.netology.data.util;
 
 import lombok.Value;
 import lombok.val;
@@ -11,7 +11,7 @@ public class DataHelper {
     private DataHelper() {
     }
 
-    public static void setUp() throws SQLException {
+    public static void cleanDataBase() throws SQLException {
         val runner = new QueryRunner();
         val codes = "DELETE FROM auth_codes";
         val cards = "DELETE FROM cards";
@@ -26,24 +26,26 @@ public class DataHelper {
             runner.update(conn, cards);
             runner.update(conn, users);
         }
+        catch (SQLException ex){}
     }
 
     @Value
     public static class AuthInfo {
-        private String login;
-        private String password;
+        private String login; //= "app";
+        private String password;// = "pass";
+        private String connection; //= "jdbc:mysql: //localhost:3306/app";
     }
 
     public static AuthInfo getAuthInfo() {
-        return new AuthInfo("vasya", "qwerty123");
+        return new AuthInfo("vasya", "qwerty123", "jdbc:mysql: //localhost:3306/app");
     }
 
     public static AuthInfo invalidLoginAuthInfo() {
-        return new AuthInfo("vbnm", "qwerty123");
+        return new AuthInfo("vbnm", "qwerty123", "jdbc:mysql: //localhost:3306/app");
     }
 
     public static AuthInfo invalidPasswordAuthInfo() {
-        return new AuthInfo("vasya", "123");
+        return new AuthInfo("vasya", "123", "jdbc:mysql: //localhost:3306/app");
     }
 
     public static String invalidPassword() {
@@ -57,10 +59,10 @@ public class DataHelper {
 
     public static String verificationCodeForVasya() throws SQLException {
         val verificationCode = "SELECT code FROM auth_codes WHERE created = (SELECT MAX(created) FROM auth_codes);";
-
+    AuthInfo info = getAuthInfo();
         try (
                 val conn = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/app", "app", "pass"
+                        info.connection, info.login, info.password
                 );
                 val countStmt = conn.createStatement();
         ) {
