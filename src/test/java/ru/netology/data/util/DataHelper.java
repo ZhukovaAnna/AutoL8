@@ -8,44 +8,52 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DataHelper {
+
+    //private String login= "app";
+    //private String password = "pass";
+    //static String connection= "jdbc:mysql: //localhost:3306/app";
+
     private DataHelper() {
     }
-
+    @Value
+    public static class AuthInfo {
+        private String login; //= "app";
+        private String password;// = "pass";
+        static String connection = "jdbc:mysql: //localhost:3306/app";
+    }
     public static void cleanDataBase() throws SQLException {
         val runner = new QueryRunner();
         val codes = "DELETE FROM auth_codes";
         val cards = "DELETE FROM cards";
         val users = "DELETE FROM users";
 
+        AuthInfo info = new AuthInfo("app", "pass");
         try (
                 val conn = DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/app", "app", "pass"
+                        info.connection, info.login, info.password
                 )
         ) {
             runner.update(conn, codes);
             runner.update(conn, cards);
             runner.update(conn, users);
         }
-        catch (SQLException ex){}
+        catch (SQLException ex)
+        {
+            //some logic
+        }
     }
 
-    @Value
-    public static class AuthInfo {
-        private String login; //= "app";
-        private String password;// = "pass";
-        private String connection; //= "jdbc:mysql: //localhost:3306/app";
-    }
 
     public static AuthInfo getAuthInfo() {
-        return new AuthInfo("vasya", "qwerty123", "jdbc:mysql: //localhost:3306/app");
+        return new AuthInfo("vasya", "qwerty123");
     }
 
     public static AuthInfo invalidLoginAuthInfo() {
-        return new AuthInfo("vbnm", "qwerty123", "jdbc:mysql: //localhost:3306/app");
+        return new AuthInfo("vbnm", "qwerty123");
     }
 
     public static AuthInfo invalidPasswordAuthInfo() {
-        return new AuthInfo("vasya", "123", "jdbc:mysql: //localhost:3306/app");
+        return new AuthInfo("vasya", "123");
     }
 
     public static String invalidPassword() {
@@ -65,7 +73,8 @@ public class DataHelper {
                         info.connection, info.login, info.password
                 );
                 val countStmt = conn.createStatement();
-        ) {
+        )
+        {
             try (val rs = countStmt.executeQuery(verificationCode)) {
                 if (rs.next()) {
                     // выборка значения по индексу столбца (нумерация с 1)
@@ -74,6 +83,10 @@ public class DataHelper {
                     return code;
                 }
             }
+        }
+        catch (SQLException ex)
+        {
+            //some logic
         }
         return null;
     }

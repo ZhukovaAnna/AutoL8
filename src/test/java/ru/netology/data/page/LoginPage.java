@@ -2,6 +2,7 @@ package ru.netology.data.page;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
+import lombok.val;
 import org.openqa.selenium.Keys;
 import ru.netology.data.util.DataHelper;
 

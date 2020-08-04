@@ -13,11 +13,6 @@ import static com.codeborne.selenide.Selenide.open;
 
 public class FormTest {
 
-//    @BeforeEach
-//    void init() {
-//       val loginPage = open("http://localhost:9999", LoginPage.class);
-//    }
-
     @AfterAll
     public static void cleanTables() throws SQLException {
         DataHelper.cleanDataBase();
