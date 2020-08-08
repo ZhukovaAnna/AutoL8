@@ -9,9 +9,9 @@ import java.sql.SQLException;
 
 public class DataHelper {
 
-    //private String login= "app";
-    //private String password = "pass";
-    //static String connection= "jdbc:mysql: //localhost:3306/app";
+    private static String login= "app";
+    private static String password = "pass";
+    private static String connection= "jdbc:mysql: //localhost:3306/app";
 
     private DataHelper() {
     }
@@ -39,7 +39,7 @@ public class DataHelper {
         }
         catch (SQLException ex)
         {
-            //some logic
+
         }
     }
 
@@ -86,7 +86,7 @@ public class DataHelper {
         }
         catch (SQLException ex)
         {
-            //some logic
+
         }
         return null;
     }
